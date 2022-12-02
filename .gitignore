@@ -1,0 +1,9 @@
+*.csv
+
+qualar-collector/
+
+__pycache__/
+
+.pytest_cache/
+
+venv/
