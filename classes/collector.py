@@ -1,64 +1,84 @@
-from config import possibilities, URL, BROWSER
+from requests import Session
+from config import possibilities, AUTH_URL, EXPORT_URL, LOGIN
 from datetime import datetime
-from os import system
-from os.path import dirname, join, expanduser
-from time import sleep
-from shutil import move, rmtree
 
 
 class Collector:
 
-    def __init__(self, years):
-        self.__years = years
+    def __init__(self, years: int):
+        self.__years: int = years
+        self.__session: Session = Session()
 
-    def __create_url(self, year: int, station: str, selected):
-        output = URL
+    def __authenticate(self):
+        self.__session.post(AUTH_URL, data=LOGIN)
 
-        output = output + '&dataInicialStr=01/01/' + str(year)
-        output = output + '&dataFinalStr=31/12/' + str(year)
-        output = output + '&estacaoVO.nestcaMonto=' + station
+    def __create_payload(self, year: int, station: str, selected: list):
+        payload = {}
 
-        for var in selected:
-            output = output + '&nparmtsSelecionados=' + var
+        payload['dataInicialStr'] = '01/01/' + str(year)
+        payload['dataFinalStr'] = '31/12/' + str(year)
+        payload['estacaoVO.nestcaMonto'] = station
+        payload['nparmtsSelecionados'] = selected
+
+        return payload
+
+    def __create_stations_payloads(self):
+        present_year = datetime.now().year
+
+        station_payloads = []
+
+        station_index = 0
+
+        for possibility in possibilities:
+            station = possibility['station']
+
+            selections = possibility['selections']
+
+            station_payloads.append([])
+
+            for index in range(self.__years):
+                year = present_year - index
+
+                for selected in selections:
+                    payload = self.__create_payload(year, station, selected)
+
+                    station_payloads[station_index].append(payload)
+
+            station_index += 1
+
+        return station_payloads
+
+    def __treat__response(self, buffer: str):
+        lines = buffer.split('\n')
+
+        lines[6] = lines[6] + lines[7]
+
+        lines.remove(lines[7])
+
+        output = "\n".join(lines[6:])
 
         return output
 
-    def __create_urls(self):
-        present_year = datetime.now().year
-
-        urls = []
-
-        for index in range(self.__years):
-            year = present_year - index
-
-            for possibility in possibilities:
-                station = possibility['station']
-
-                for vars in possibility['selections']:
-                    selected = []
-                    for var in vars:
-                        if var != None:
-                            selected.append(var)
-
-                    urls.append(self.__create_url(year, station, selected))
-
-        return urls
-
     def collect_csvs(self):
-        urls = self.__create_urls()
+        self.__authenticate()
 
-        download_path = join(expanduser('~'), 'Downloads')
-        base_path = join(dirname(dirname(__file__)), 'data', 'base')
+        station_payloads = self.__create_stations_payloads()
 
-        rmtree(download_path)
+        station_index = 0
 
-        for url in urls:
-            command = BROWSER + ' \"' + url + "\""
-            system(command)
-            sleep(10)
+        stations_responeses = []
 
-        sleep(30)
+        for payloads in station_payloads[0:1]:
 
-        rmtree(base_path)
+            stations_responeses.append([])
 
-        move(download_path, base_path)
+            for payload in payloads[0:3]:
+                response = self.__session.post(EXPORT_URL, data=payload)
+
+                content = str(response.content, encoding='ISO-8859-1')
+
+                treated = self.__treat__response(content)
+
+                stations_responeses[station_index].append(treated)
+
+        return stations_responeses

@@ -30,7 +30,7 @@ possibilities = [
             [DVG, MP10, NO],
             [NO2, NOX, O3],
             [SO2, TEMP, TOL],
-            [UR, VV, None],
+            [UR, VV],
         ],
     },
     {
@@ -49,7 +49,7 @@ possibilities = [
             [BEN, DV, DVG],
             [PRESS, RADG, RADUV],
             [TEMP, TOL, UR],
-            [VV, None, None],
+            [VV],
         ],
     },
 ]
