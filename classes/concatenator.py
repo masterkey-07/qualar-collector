@@ -1,4 +1,4 @@
-from pandas import read_csv
+from pandas import read_csv, concat
 from io import StringIO
 
 
@@ -7,16 +7,24 @@ class Concatenator:
     def __to_dataframe(self, data):
         return read_csv(StringIO(data), sep=';')
 
-    def concatenate(self, datas):
+    def __concatenate_year(self, datas: list[str]):
+        concatenated = self.__to_dataframe(datas[0])
 
-        for index in range(len(datas)):
-            datas[index] = self.__to_dataframe(datas[index])
+        for data in datas[1:]:
+            dataframe = self.__to_dataframe(data)
 
-        output = datas[0]
+            concatenated = concatenated.merge(
+                dataframe, on=['Data', 'Hora'], how='outer')
 
-        for index in range(1, len(datas)):
+        return concatenated
 
-            output = output.merge(
-                datas[index],  how='outer', on=['Data', 'Hora'])
+    def concatenate(self, yearly_datas: list[list[str]]):
 
-        return output
+        concatenated = self.__concatenate_year(yearly_datas[0])
+
+        for datas in yearly_datas[1:]:
+            dataframe = self.__concatenate_year(datas)
+
+            concatenated = concat([concatenated, dataframe])
+
+        return concatenated
