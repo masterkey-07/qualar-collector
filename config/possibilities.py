@@ -22,8 +22,9 @@ RADG = 26
 RADUV = 56
 
 SJC_OPTIONS = {
+    'label': 'São José dos Campos',
     'station': SJC,
-    'selections': [
+    'variables': [
         [BEN, CO, DV],
         [DVG, MP10, NO],
         [NO2, NOX, O3],
@@ -33,8 +34,9 @@ SJC_OPTIONS = {
 }
 
 SATELITE_OPTIONS = {
+    'label': 'Jardim Satélite',
     'station': SATELITE,
-    'selections': [
+    'variables': [
         [CO, DV, DVG],
         [MP10, MP25, NO],
         [NO2, NOX, O3],
@@ -45,8 +47,9 @@ SATELITE_OPTIONS = {
 
 
 GREENVIEW_OPTIONS = {
+    'label': 'Vista Verde',
     'station': GREENVIEW,
-    'selections': [
+    'variables': [
         [BEN, DV, DVG],
         [PRESS, RADG, RADUV],
         [TEMP, TOL, UR],

@@ -22,7 +22,7 @@ class Collector:
     def __treat__response(self, buffer: str):
         lines = buffer.split('\n')
 
-        lines[6] = 'Data; Hora;' + lines[7][3:]
+        lines[6] = 'Data;Hora;' + lines[7][3:]
 
         lines.remove(lines[7])
 
@@ -31,8 +31,6 @@ class Collector:
         return output
 
     def collect_yearly_csvs(self, constructor: PayloadConstructor) -> list[list[str]]:
-        self.__authenticate()
-
         yearly_csvs = []
 
         yearly_payloads = constructor.get_yearly_payloads()
