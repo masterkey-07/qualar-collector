@@ -22,9 +22,13 @@ def test_payload_constuctor():
     initial_date = yearly_payloads[0][0]['dataInicialStr']
     final_date = yearly_payloads[0][0]['dataFinalStr']
 
+    second_final_date = yearly_payloads[1][0]['dataFinalStr']
+
     assert initial_date == "01/01/2022"
 
     assert final_date == datetime.strftime(datetime.today(), '%d/%m/%Y')
+
+    assert second_final_date = "31/12/2021"
 
     with pytest.raises(WrongStation):
         constructor = PayloadConstructor('199', [[61, 16, 120]], [2021])
