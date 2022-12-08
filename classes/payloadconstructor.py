@@ -1,4 +1,5 @@
 from classes.errors import WrongVariables, WrongStation, WrongYear
+from datetime import datetime
 
 
 class PayloadConstructor:
@@ -31,11 +32,18 @@ class PayloadConstructor:
         self.__variables = variables
         self.__years = years
 
+    def __get_end_date(self, year: int) -> str:
+        present_date = datetime.strftime(datetime.today(), '%d/%m/%y')
+
+        present_year = datetime.today().year
+
+        return present_date if present_year == year else '31/12' + str(year)
+
     def __create_payload(self, year: int, variables: list[str]) -> dict:
         payload = {}
 
         payload['dataInicialStr'] = '01/01/' + str(year)
-        payload['dataFinalStr'] = '31/12/' + str(year)
+        payload['dataFinalStr'] = self.__get_end_date(year)
         payload['estacaoVO.nestcaMonto'] = self.__station
         payload['nparmtsSelecionados'] = variables
 
