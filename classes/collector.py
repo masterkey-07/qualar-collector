@@ -40,6 +40,8 @@ class Collector:
 
             for payload in yearly_payloads[index]:
 
+                print(payload)
+
                 response = self.__session.post(EXPORT_URL, data=payload)
 
                 content = str(response.content, encoding='ISO-8859-1')

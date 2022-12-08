@@ -3,6 +3,7 @@ from classes.payloadconstructor import PayloadConstructor
 from classes.concatenator import Concatenator
 from classes.errors import WrongVariables, WrongStation, WrongYear
 from config import SJC_OPTIONS, USERNAME, PASSWORD
+from datetime import datetime
 import pytest
 
 
@@ -19,8 +20,11 @@ def test_payload_constuctor():
     yearly_payloads = constructor.get_yearly_payloads()
 
     initial_date = yearly_payloads[0][0]['dataInicialStr']
+    final_date = yearly_payloads[0][0]['dataFinalStr']
 
     assert initial_date == "01/01/2022"
+
+    assert final_date == datetime.strftime(datetime.today(), '%d/%m/%Y')
 
     with pytest.raises(WrongStation):
         constructor = PayloadConstructor('199', [[61, 16, 120]], [2021])
@@ -41,7 +45,7 @@ def test_collector():
 
     csv = csvs[0][0]
 
-    assert csv.count(';') >= 8760 * 4
+    assert csv.count(';') >= 8760 * 3
 
 
 def test_concatenator():
@@ -53,4 +57,4 @@ def test_concatenator():
 
     csv = Concatenator().concatenate(csvs)
 
-    assert csv.size > 8760 * 2
+    assert csv.size > 8760

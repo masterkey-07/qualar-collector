@@ -33,11 +33,11 @@ class PayloadConstructor:
         self.__years = years
 
     def __get_end_date(self, year: int) -> str:
-        present_date = datetime.strftime(datetime.today(), '%d/%m/%y')
+        present_date = datetime.strftime(datetime.today(), '%d/%m/%Y')
 
         present_year = datetime.today().year
 
-        return present_date if present_year == year else '31/12' + str(year)
+        return present_date if present_year == year else '31/12/' + str(year)
 
     def __create_payload(self, year: int, variables: list[str]) -> dict:
         payload = {}
