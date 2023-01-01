@@ -8,7 +8,6 @@ options = [SJC_OPTIONS, SATELITE_OPTIONS, GREENVIEW_OPTIONS]
 years = [2022, 2021, 2020, 2019]
 
 for option in options:
-
     label = option['label']
     station = option['station']
     variables = option['variables']

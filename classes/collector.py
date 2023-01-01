@@ -5,7 +5,7 @@ from classes.payloadconstructor import PayloadConstructor
 
 class Collector:
 
-    def __init__(self, username: str, password: str) -> None:
+    def __init__(self, username: str, password: str):
         self.__session: Session = Session()
 
         self.__authenticate(username, password)
@@ -22,7 +22,7 @@ class Collector:
     def __treat__response(self, buffer: str):
         lines = buffer.split('\n')
 
-        lines[6] = 'Data;Hora;' + lines[7][3:]
+        lines[6] = 'Data;Hora;' + lines[7][2:]
 
         lines.remove(lines[7])
 
@@ -39,8 +39,6 @@ class Collector:
             yearly_csvs.append([])
 
             for payload in yearly_payloads[index]:
-
-                print(payload)
 
                 response = self.__session.post(EXPORT_URL, data=payload)
 

@@ -7,11 +7,14 @@ from datetime import datetime
 import pytest
 
 
+present_year = datetime.now().year
+
+
 def create_constructor():
     station = SJC_OPTIONS['station']
     variables = SJC_OPTIONS['variables'][0]
 
-    return PayloadConstructor(station, [variables], [2022, 2021])
+    return PayloadConstructor(station, [variables], [present_year, 2021])
 
 
 def test_payload_constuctor():
@@ -24,7 +27,8 @@ def test_payload_constuctor():
 
     second_final_date = yearly_payloads[1][0]['dataFinalStr']
 
-    assert initial_date == "01/01/2022"
+    assert initial_date == datetime.strftime(
+        datetime(present_year, 1, 1), '%d/%m/%Y')
 
     assert final_date == datetime.strftime(datetime.today(), '%d/%m/%Y')
 
